@@ -10,20 +10,20 @@ module Net
       def initialize(phost, pport, puser, ppass)
         @soc = TCPSocket.new(phost,pport)
         str=@soc.readline
-        if str !=~ /^220/
+        if !str.match /^220/
           raise "Invalid proxy response"
         end
         @soc.write "USER " + puser
         @soc.write(ENDLINE)
         str=@soc.readline
-        if str =~ /^331/
+        if str.match /^331/
           # password required
           @soc.write "PASS " + ppass
           @soc.write(ENDLINE)
           str=@soc.readline
         end
         
-        unless str =~ /^230/
+        unless str.match /^230/
           raise "proxy user or password not correct (#{str})"
         end
       end
@@ -71,7 +71,7 @@ module Net
           str=@soc.readline.strip
         end
         
-        if resp[0] =~ /200/
+        if resp[0].match /200/
           ftp = Net::FTP.new()
           ftp.set_socket(@soc)
           if block_given?
